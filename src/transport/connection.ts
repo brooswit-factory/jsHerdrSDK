@@ -1,5 +1,6 @@
-import type { Socket } from "bun";
+import { Socket } from "node:net";
 import { LineSplitter } from "./line-splitter.js";
+import { socketEndpoint } from "./socket-path.js";
 import { HerdrTransportError } from "../protocol/error.js";
 
 export interface ConnectionHandlers {
@@ -9,28 +10,29 @@ export interface ConnectionHandlers {
 }
 
 /**
- * A single unix-socket connection that delivers newline-delimited frames.
+ * A single connection that delivers newline-delimited frames: a Unix-domain
+ * socket on Linux/macOS, a named pipe on Windows (see `socketEndpoint`).
  * Knows nothing about JSON or the protocol; that is one layer up.
  */
 export class Connection {
-  private constructor(private readonly sock: Socket<undefined>) {}
+  private constructor(private readonly sock: Socket) {}
 
-  static async open(path: string, h: ConnectionHandlers): Promise<Connection> {
+  static open(path: string, h: ConnectionHandlers): Promise<Connection> {
     const split = new LineSplitter();
-    try {
-      const sock = await Bun.connect({
-        unix: path,
-        socket: {
-          data: (_s, d) => { for (const l of split.push(d.toString())) h.onLine(l); },
-          close: () => h.onClose(),
-          error: (_s, e) => h.onError(e),
-          connectError: (_s, e) => h.onError(e),
-        },
+    return new Promise<Connection>((resolve, reject) => {
+      let connected = false;
+      const sock = new Socket();
+      // Listeners must be attached before `connect()` — it can fail (e.g. ENOENT)
+      // before this call returns, and a socket with no "error" listener yet throws.
+      sock.once("connect", () => { connected = true; resolve(new Connection(sock)); });
+      sock.on("data", (d) => { for (const l of split.push(d.toString())) h.onLine(l); });
+      sock.on("close", () => { if (connected) h.onClose(); });
+      sock.on("error", (e) => {
+        if (connected) h.onError(e);
+        else reject(new HerdrTransportError(`cannot connect to herdr socket at ${path}`, e));
       });
-      return new Connection(sock);
-    } catch (e) {
-      throw new HerdrTransportError(`cannot connect to herdr socket at ${path}`, e);
-    }
+      sock.connect(socketEndpoint(path));
+    });
   }
 
   writeLine(line: string): void { this.sock.write(line + "\n"); }
