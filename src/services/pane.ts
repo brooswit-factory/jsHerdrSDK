@@ -32,4 +32,11 @@ export class PaneService extends Service {
   graphicsInfo(pane_id: string) { return this.call("pane.graphics.info", { pane_id }); }
   reportMetadata(p: params.PaneReportMetadataParams) { return this.call("pane.report_metadata", p); }
   clearAgentAuthority(p: params.PaneClearAgentAuthorityParams) { return this.call("pane.clear_agent_authority", p); }
+  scroll(p: params.PaneScrollParams) { return this.call("pane.scroll", p); }
+  editScrollback(pane_id: string) { return this.call("pane.edit_scrollback", { pane_id }); }
+  selectionRead(p: params.PaneSelectionReadParams) { return this.call("pane.selection.read", p); }
+  copyMotion(p: params.PaneCopyMotionParams) { return this.call("pane.copy_motion", p); }
+  copySearch(p: params.PaneCopySearchParams) { return this.call("pane.copy_search", p); }
+  linkActivate(p: params.PaneLinkActivateParams) { return this.call("pane.link.activate", p); }
+  linkResolve(p: params.PaneLinkActivateParams) { return this.call("pane.link.resolve", p); }
 }

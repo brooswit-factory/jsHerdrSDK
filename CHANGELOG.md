@@ -10,6 +10,10 @@ CI (`scripts/release/check.ts`) refuses a merge that changes `src/`, `schema/` o
 - **MINOR** — a new feature, or a change to an existing feature that breaks just that feature. Also the floor whenever `schema/herdr-api.schema.json` changes.
 - **PATCH** — a fix or correction that requires no consumer code changes, or very minor ones.
 
+## [0.3.0] - 2026-09-28
+### Added
+- Refreshed schema/generated code and wrappers for herdr 0.9.1 (protocol 22): `client_shell.surface.set`, `command.invoke`, `integration.list`, `pane.copy_motion`, `pane.copy_search`, `pane.edit_scrollback`, `pane.link.activate`, `pane.link.resolve`, `pane.scroll`, `pane.selection.read`, `product_announcement.dismiss`, `release_notes.dismiss`.
+
 ## [0.2.0] - 2026-09-27
 ### Fixed
 - Windows could never connect: the transport hardcoded `Bun.connect({ unix: path })`, a Unix-domain-only API with no platform branch. Replaced with `node:net`'s `Socket`, which handles both a Unix socket path (Linux/macOS, unchanged) and a Windows named pipe — matching herdr's own published address contract (`\\.\pipe\<path>`, prefixed byte-for-byte, never otherwise rewritten). Pinned by unit tests that inject `process.platform`, so this runs in ordinary CI without a Windows host.

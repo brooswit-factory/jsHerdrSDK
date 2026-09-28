@@ -30,6 +30,9 @@ const calls: Array<[string, () => Promise<unknown>]> = [
   ["pane.edges", () => c.pane.edges(P)], ["pane.focus_direction", () => c.pane.focusDirection(P)], ["pane.resize", () => c.pane.resize(P)], ["pane.input.set", () => c.pane.setInput(P)],
   ["pane.graphics.set", () => c.pane.setGraphics(P)], ["pane.graphics.clear", () => c.pane.clearGraphics(P)], ["pane.graphics.info", () => c.pane.graphicsInfo(T)],
   ["pane.report_metadata", () => c.pane.reportMetadata(P)], ["pane.clear_agent_authority", () => c.pane.clearAgentAuthority(P)],
+  ["pane.scroll", () => c.pane.scroll(P)], ["pane.edit_scrollback", () => c.pane.editScrollback(T)], ["pane.selection.read", () => c.pane.selectionRead(P)],
+  ["pane.copy_motion", () => c.pane.copyMotion(P)], ["pane.copy_search", () => c.pane.copySearch(P)],
+  ["pane.link.activate", () => c.pane.linkActivate(P)], ["pane.link.resolve", () => c.pane.linkResolve(P)],
   ["workspace.list", () => c.workspace.list()], ["workspace.get", () => c.workspace.get(P)], ["workspace.create", () => c.workspace.create(P)], ["workspace.focus", () => c.workspace.focus(P)],
   ["workspace.rename", () => c.workspace.rename(P)], ["workspace.close", () => c.workspace.close(P)], ["workspace.report_metadata", () => c.workspace.reportMetadata(P)],
   ["workspace.move", () => c.workspace.move(P)], ["workspace.move_block", () => c.workspace.moveBlock(P)],
@@ -40,8 +43,10 @@ const calls: Array<[string, () => Promise<unknown>]> = [
   ["plugin.list", () => c.plugin.list()], ["plugin.link", () => c.plugin.link(P)], ["plugin.unlink", () => c.plugin.unlink(P)], ["plugin.enable", () => c.plugin.enable(P)],
   ["plugin.disable", () => c.plugin.disable(P)], ["plugin.action.list", () => c.plugin.actionList(P)], ["plugin.action.invoke", () => c.plugin.actionInvoke(P)],
   ["plugin.log.list", () => c.plugin.logList(P)], ["plugin.pane.open", () => c.plugin.paneOpen(P)], ["plugin.pane.focus", () => c.plugin.paneFocus(P)], ["plugin.pane.close", () => c.plugin.paneClose(P)],
-  ["integration.install", () => c.integration.install(P)], ["integration.uninstall", () => c.integration.uninstall(P)],
+  ["integration.list", () => c.integration.list()], ["integration.install", () => c.integration.install(P)], ["integration.uninstall", () => c.integration.uninstall(P)],
   ["client.window_title.set", () => c.ui.setWindowTitle(P)], ["client.window_title.clear", () => c.ui.clearWindowTitle()], ["notification.show", () => c.ui.notify(P)], ["popup.close", () => c.ui.closePopup()],
+  ["client_shell.surface.set", () => c.ui.setShellSurface(P)], ["command.invoke", () => c.ui.invokeCommand(P)],
+  ["product_announcement.dismiss", () => c.ui.dismissProductAnnouncement(P)], ["release_notes.dismiss", () => c.ui.dismissReleaseNotes(P)],
   ["events.wait", () => c.events.wait(P)], ["events.subscribe", () => c.events.subscribeAck(P)],
 ];
 
