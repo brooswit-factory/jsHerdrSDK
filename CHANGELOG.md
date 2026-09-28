@@ -10,6 +10,16 @@ CI (`scripts/release/check.ts`) refuses a merge that changes `src/`, `schema/` o
 - **MINOR** — a new feature, or a change to an existing feature that breaks just that feature. Also the floor whenever `schema/herdr-api.schema.json` changes.
 - **PATCH** — a fix or correction that requires no consumer code changes, or very minor ones.
 
+## [0.2.0] - 2026-09-27
+### Fixed
+- Windows could never connect: the transport hardcoded `Bun.connect({ unix: path })`, a Unix-domain-only API with no platform branch. Replaced with `node:net`'s `Socket`, which handles both a Unix socket path (Linux/macOS, unchanged) and a Windows named pipe — matching herdr's own published address contract (`\\.\pipe\<path>`, prefixed byte-for-byte, never otherwise rewritten). Pinned by unit tests that inject `process.platform`, so this runs in ordinary CI without a Windows host.
+- The SDK ignored `HERDR_SOCKET_PATH`, herdr's actual documented socket-path override, and read only the nonstandard `HERDR_SOCKET`. `HERDR_SOCKET_PATH` is now honored and takes precedence; `HERDR_SOCKET` remains a deprecated fallback for backward compatibility.
+- The default socket path no longer hardcodes `~/.config/herdr/herdr.sock`. It now mirrors herdr's own config-dir resolution: `XDG_CONFIG_HOME` if set; else on Windows `%APPDATA%`, then `%USERPROFILE%\AppData\Roaming`, then `$HOME/.config`, then the temp dir; else (POSIX) `$HOME/.config`, then the temp dir.
+### Added
+- `HerdrClientOptions.dev` — point at a `herdr-dev` debug build's config dir instead of a release build's `herdr`. Never inferred at runtime; opt in explicitly.
+- `HerdrClientOptions.sessionName` — connect to a named session's socket (`<configdir>/sessions/<name>/herdr.sock`) instead of the default.
+- `configDir()` and `socketEndpoint()` exported from `src/transport/socket-path.ts` for anyone deriving these paths themselves.
+
 ## [0.1.3] - 2026-08-26
 ### Changed
 - Repository moved to the brooswit-factory org; package.json repository/homepage/bugs URLs updated (npm provenance verifies repository.url against the building repo).
