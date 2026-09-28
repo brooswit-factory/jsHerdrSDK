@@ -1,5 +1,5 @@
 import type { RpcOptions } from "./client/rpc.js";
-import { defaultSocketPath } from "./transport/socket-path.js";
+import { defaultSocketPath, type SocketPathOptions } from "./transport/socket-path.js";
 import { Subscription } from "./events/subscription.js";
 import type { Subscription as SubscriptionSpec } from "./generated/params.js";
 import { AgentService, ClientUiService, EventsService, IntegrationService, LayoutService, PaneService, PluginService, ServerService, SessionService, TabService, WorkspaceService, WorktreeService } from "./services/index.js";
@@ -10,6 +10,10 @@ import type { ParamsOf, ResultOf } from "./client/typed.js";
 export interface HerdrClientOptions {
   socketPath?: string;
   timeoutMs?: number;
+  /** Point at a `herdr-dev` debug build's config dir instead of a release build's `herdr`. Ignored when `socketPath` is given. */
+  dev?: boolean;
+  /** Connect to a named session's socket instead of the default. Ignored when `socketPath` is given. */
+  sessionName?: string;
 }
 
 /** Entry point. One instance is cheap: it holds options, not a connection. */
@@ -29,7 +33,14 @@ export class HerdrClient {
   readonly events: EventsService;
 
   constructor(o: HerdrClientOptions = {}) {
-    this.opts = { socketPath: o.socketPath ?? defaultSocketPath(), ...(o.timeoutMs !== undefined ? { timeoutMs: o.timeoutMs } : {}) };
+    const socketOpts: SocketPathOptions = {
+      ...(o.dev !== undefined ? { dev: o.dev } : {}),
+      ...(o.sessionName !== undefined ? { sessionName: o.sessionName } : {}),
+    };
+    this.opts = {
+      socketPath: o.socketPath ?? defaultSocketPath(process.env, process.platform, socketOpts),
+      ...(o.timeoutMs !== undefined ? { timeoutMs: o.timeoutMs } : {}),
+    };
     this.server = new ServerService(this.opts);
     this.session = new SessionService(this.opts);
     this.agent = new AgentService(this.opts);
