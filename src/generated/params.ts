@@ -96,14 +96,6 @@ export type PaneEdgesParams = { "pane_id"?: string | null; };
 
 export type PaneFocusDirectionParams = { "direction": PaneDirection; "pane_id"?: string | null; };
 
-export type PaneGraphicsClearParams = { "layer_id"?: string | null; "pane_id": string; };
-
-export type PaneGraphicsFormat = "png" | "rgb" | "rgba" | "bgra";
-
-export type PaneGraphicsPlacementParams = { "grid_cols"?: number; "grid_rows"?: number; "viewport_col"?: number; "viewport_row"?: number; };
-
-export type PaneGraphicsSetParams = { "data_base64"?: string; "format": PaneGraphicsFormat; "image_height": number; "image_width": number; "layer_id"?: string | null; "pane_id": string; "placement"?: PaneGraphicsPlacementParams; "z_index"?: number; };
-
 export type PaneInputSetParams = { "pane_id": string; "right_click": PaneRightClickTarget; };
 
 export type PaneLayoutParams = { "pane_id"?: string | null; };
@@ -126,9 +118,11 @@ export type PaneReleaseAgentParams = { "agent": string; "pane_id": string; "seq"
 
 export type PaneRenameParams = { "label"?: string | null; "pane_id": string; };
 
-export type PaneReportAgentParams = { "agent": string; "agent_session_id"?: string | null; "agent_session_path"?: string | null; "message"?: string | null; "pane_id": string; "seq"?: number | null; "source": string; "state": PaneAgentState; };
+export type PaneReportAgentParams = { "agent": string; "agent_session_id"?: string | null; "agent_session_path"?: string | null; "message"?: string | null; "pane_id": string; /** Command that resumes this agent's session after a Herdr restart. The
+first element must be a plain command name. */ "resume_argv"?: Array<string> | null; "seq"?: number | null; "source": string; "state": PaneAgentState; };
 
-export type PaneReportAgentSessionParams = { "agent": string; "agent_session_id"?: string | null; "agent_session_path"?: string | null; "pane_id": string; "seq"?: number | null; "session_start_source"?: string | null; "source": string; };
+export type PaneReportAgentSessionParams = { "agent": string; "agent_session_id"?: string | null; "agent_session_path"?: string | null; "pane_id": string; /** Command that resumes this agent's session after a Herdr restart. The
+first element must be a plain command name. */ "resume_argv"?: Array<string> | null; "seq"?: number | null; "session_start_source"?: string | null; "source": string; };
 
 export type PaneReportMetadataParams = { "agent"?: string | null; "applies_to_source"?: string | null; "clear_display_agent"?: boolean; "clear_state_labels"?: boolean; "clear_title"?: boolean; "display_agent"?: string | null; "pane_id": string; "seq"?: number | null; "source": string; "state_labels"?: { [key: string]: string; }; "title"?: string | null; "tokens"?: { [key: string]: string | null; }; "ttl_ms"?: number | null; };
 
@@ -204,6 +198,8 @@ export type ReleaseNotesDismissParams = { "version": string; };
 
 export type ServerLiveHandoffParams = { "expected_protocol"?: number | null; "expected_version"?: string | null; "import_exe"?: string | null; };
 
+export type ServerSshAgentRegisterParams = { /** Absolute remote-host agent socket. Registration lasts until this API connection closes. */ "socket_path": string; };
+
 export type SplitDirection = "right" | "down";
 
 export type Subscription = ({ "type": "workspace.created"; }) | ({ "type": "workspace.updated"; }) | ({ "type": "workspace.metadata_updated"; }) | ({ "type": "workspace.renamed"; }) | ({ "type": "workspace.moved"; }) | ({ "type": "workspace.reordered"; }) | ({ "type": "workspace.closed"; }) | ({ "type": "workspace.focused"; }) | ({ "type": "worktree.created"; }) | ({ "type": "worktree.opened"; }) | ({ "type": "worktree.removed"; }) | ({ "type": "tab.created"; }) | ({ "type": "tab.closed"; }) | ({ "type": "tab.focused"; }) | ({ "type": "tab.renamed"; }) | ({ "type": "tab.moved"; }) | ({ "type": "pane.created"; }) | ({ "type": "pane.closed"; }) | ({ "type": "pane.updated"; }) | ({ "type": "pane.focused"; }) | ({ "type": "pane.moved"; }) | ({ "type": "pane.exited"; }) | ({ "type": "pane.agent_detected"; }) | ({ "lines"?: number | null; "match": OutputMatch; "pane_id": string; "source": ReadSource; "strip_ansi"?: boolean; "type": "pane.output_matched"; }) | ({ "agent_status"?: (AgentStatus) | (null); "pane_id": string; "type": "pane.agent_status_changed"; }) | ({ "pane_id": string; "type": "pane.scroll_changed"; }) | ({ "type": "layout.updated"; });
@@ -250,6 +246,7 @@ export interface MethodParams {
   "server.stop": EmptyParams;
   "server.live_handoff": ServerLiveHandoffParams;
   "server.reload_config": EmptyParams;
+  "server.ssh_agent.register": ServerSshAgentRegisterParams;
   "server.agent_manifests": EmptyParams;
   "server.reload_agent_manifests": EmptyParams;
   "notification.show": NotificationShowParams;
@@ -306,6 +303,7 @@ export interface MethodParams {
   "pane.focus_direction": PaneFocusDirectionParams;
   "pane.resize": PaneResizeParams;
   "pane.scroll": PaneScrollParams;
+  "pane.clear": PaneTarget;
   "pane.edit_scrollback": PaneTarget;
   "pane.selection.read": PaneSelectionReadParams;
   "pane.copy_motion": PaneCopyMotionParams;
@@ -322,9 +320,6 @@ export interface MethodParams {
   "pane.send_keys": PaneSendKeysParams;
   "pane.send_input": PaneSendInputParams;
   "pane.read": PaneReadParams;
-  "pane.graphics.set": PaneGraphicsSetParams;
-  "pane.graphics.clear": PaneGraphicsClearParams;
-  "pane.graphics.info": PaneTarget;
   "pane.report_agent": PaneReportAgentParams;
   "pane.report_agent_session": PaneReportAgentSessionParams;
   "pane.report_metadata": PaneReportMetadataParams;
@@ -358,6 +353,7 @@ export const METHODS = [
   "server.stop",
   "server.live_handoff",
   "server.reload_config",
+  "server.ssh_agent.register",
   "server.agent_manifests",
   "server.reload_agent_manifests",
   "notification.show",
@@ -414,6 +410,7 @@ export const METHODS = [
   "pane.focus_direction",
   "pane.resize",
   "pane.scroll",
+  "pane.clear",
   "pane.edit_scrollback",
   "pane.selection.read",
   "pane.copy_motion",
@@ -430,9 +427,6 @@ export const METHODS = [
   "pane.send_keys",
   "pane.send_input",
   "pane.read",
-  "pane.graphics.set",
-  "pane.graphics.clear",
-  "pane.graphics.info",
   "pane.report_agent",
   "pane.report_agent_session",
   "pane.report_metadata",

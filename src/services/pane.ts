@@ -27,9 +27,7 @@ export class PaneService extends Service {
   focusDirection(p: params.PaneFocusDirectionParams) { return this.call("pane.focus_direction", p); }
   resize(p: params.PaneResizeParams) { return this.call("pane.resize", p); }
   setInput(p: params.PaneInputSetParams) { return this.call("pane.input.set", p); }
-  setGraphics(p: params.PaneGraphicsSetParams) { return this.call("pane.graphics.set", p); }
-  clearGraphics(p: params.PaneGraphicsClearParams) { return this.call("pane.graphics.clear", p); }
-  graphicsInfo(pane_id: string) { return this.call("pane.graphics.info", { pane_id }); }
+  clear(pane_id: string) { return this.call("pane.clear", { pane_id }); }
   reportMetadata(p: params.PaneReportMetadataParams) { return this.call("pane.report_metadata", p); }
   clearAgentAuthority(p: params.PaneClearAgentAuthorityParams) { return this.call("pane.clear_agent_authority", p); }
   scroll(p: params.PaneScrollParams) { return this.call("pane.scroll", p); }

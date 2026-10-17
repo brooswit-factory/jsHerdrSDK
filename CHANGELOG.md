@@ -10,6 +10,12 @@ CI (`scripts/release/check.ts`) refuses a merge that changes `src/`, `schema/` o
 - **MINOR** — a new feature, or a change to an existing feature that breaks just that feature. Also the floor whenever `schema/herdr-api.schema.json` changes.
 - **PATCH** — a fix or correction that requires no consumer code changes, or very minor ones.
 
+## [1.0.0] - 2026-10-17
+### BREAKING
+- Removed `PaneService.setGraphics`, `clearGraphics` and `graphicsInfo`: herdr 0.9.5 (protocol 22) dropped `pane.graphics.set`, `pane.graphics.clear` and `pane.graphics.info` along with the `pane_graphics_frame_ack`/`pane_graphics_info` result tags. There is no replacement API.
+### Added
+- Refreshed schema/generated code for herdr 0.9.5 (protocol 22, up from 0.9.1): `PaneService.clear` (`pane.clear`) and `ServerService.sshAgentRegister` (`server.ssh_agent.register`).
+
 ## [0.3.0] - 2026-09-28
 ### Added
 - Refreshed schema/generated code and wrappers for herdr 0.9.1 (protocol 22): `client_shell.surface.set`, `command.invoke`, `integration.list`, `pane.copy_motion`, `pane.copy_search`, `pane.edit_scrollback`, `pane.link.activate`, `pane.link.resolve`, `pane.scroll`, `pane.selection.read`, `product_announcement.dismiss`, `release_notes.dismiss`.

@@ -18,6 +18,7 @@ const T = "w1:p1";
 const calls: Array<[string, () => Promise<unknown>]> = [
   ["ping", () => c.server.ping()], ["server.stop", () => c.server.stop()], ["server.reload_config", () => c.server.reloadConfig()],
   ["server.agent_manifests", () => c.server.agentManifests()], ["server.reload_agent_manifests", () => c.server.reloadAgentManifests()], ["server.live_handoff", () => c.server.liveHandoff(P)],
+  ["server.ssh_agent.register", () => c.server.sshAgentRegister(P)],
   ["session.snapshot", () => c.session.snapshot()],
   ["agent.list", () => c.agent.list()], ["agent.get", () => c.agent.get(T)], ["agent.explain", () => c.agent.explain(T)], ["agent.read", () => c.agent.read(P)],
   ["agent.send_keys", () => c.agent.sendKeys(P)], ["agent.rename", () => c.agent.rename(P)], ["agent.focus", () => c.agent.focus(T)], ["agent.start", () => c.agent.start(P)],
@@ -28,7 +29,7 @@ const calls: Array<[string, () => Promise<unknown>]> = [
   ["pane.report_agent", () => c.pane.reportAgent(P)], ["pane.report_agent_session", () => c.pane.reportAgentSession(P)], ["pane.release_agent", () => c.pane.releaseAgent(P)],
   ["pane.swap", () => c.pane.swap(P)], ["pane.move", () => c.pane.move(P)], ["pane.zoom", () => c.pane.zoom(P)], ["pane.layout", () => c.pane.layout(P)], ["pane.neighbor", () => c.pane.neighbor(P)],
   ["pane.edges", () => c.pane.edges(P)], ["pane.focus_direction", () => c.pane.focusDirection(P)], ["pane.resize", () => c.pane.resize(P)], ["pane.input.set", () => c.pane.setInput(P)],
-  ["pane.graphics.set", () => c.pane.setGraphics(P)], ["pane.graphics.clear", () => c.pane.clearGraphics(P)], ["pane.graphics.info", () => c.pane.graphicsInfo(T)],
+  ["pane.clear", () => c.pane.clear(T)],
   ["pane.report_metadata", () => c.pane.reportMetadata(P)], ["pane.clear_agent_authority", () => c.pane.clearAgentAuthority(P)],
   ["pane.scroll", () => c.pane.scroll(P)], ["pane.edit_scrollback", () => c.pane.editScrollback(T)], ["pane.selection.read", () => c.pane.selectionRead(P)],
   ["pane.copy_motion", () => c.pane.copyMotion(P)], ["pane.copy_search", () => c.pane.copySearch(P)],
