@@ -8,4 +8,5 @@ export class ServerService extends Service {
   agentManifests() { return this.call("server.agent_manifests", {}); }
   reloadAgentManifests() { return this.call("server.reload_agent_manifests", {}); }
   liveHandoff(p: params.ServerLiveHandoffParams) { return this.call("server.live_handoff", p); }
+  sshAgentRegister(p: params.ServerSshAgentRegisterParams) { return this.call("server.ssh_agent.register", p); }
 }
